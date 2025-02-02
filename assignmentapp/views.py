@@ -382,6 +382,7 @@ def import_csv_view(request, table_name):
         process_csv_import(table_name, file_path)
         # process_csv_import.delay(table_name, file_path)
         
+        
         return render(request, "import_csv.html", {"message": "Import started. Check logs for status."})
 
     return render(request, "import_csv.html", {"table_name": table_name})
