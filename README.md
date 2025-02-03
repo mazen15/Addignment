@@ -60,5 +60,5 @@ Method	Endpoint	Description
 
 4. Delete /assignmentapp/api/table/delete-table/ Api to delete a table using the generated token in the header as authorization and a json including the table data in the body
                                  {
-                                   "name": "customer-test2"
+                                   "name": "customer"
                                  }
