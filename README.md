@@ -17,9 +17,11 @@ handle large data imports efficiently. The system have secure, flexible APIs
    git clone https://github.com/mazen15/Assignment.git
 
 2. Navigate to the project directory:
+3. 
    cd .\assignment\
 
-3. Install dependencies:
+4. Install dependencies:
+   
    python -m venv env
    
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
@@ -40,12 +42,15 @@ handle large data imports efficiently. The system have secure, flexible APIs
    
 
 5. Start Redis
+   
    redis-server --port 6381
 
 6. Start Celery:
+   
    celery -A assignment.celery worker --loglevel=info --pool=solo
 
 7. Run the Project
+   
    python manage.py runserver
 
 API Endpoints
