@@ -6,7 +6,7 @@
 <form method="post">
     {% csrf_token %}
     {% for field in record|get_meta_fields %}
-    {% if field.name == "id" %}
+    {% if field.name == "id" or field.name == "created_at" %}
     <div class="form-group">
         <label for="{{ field.name }}">{{ field.name }}</label>
         <input readonly type="text" class="form-control" id="{{ field.name }}" name="{{ field.name }}" value="{{ record|getattr_custom:field.name }}">

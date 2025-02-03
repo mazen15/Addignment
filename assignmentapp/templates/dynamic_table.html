@@ -21,9 +21,15 @@
         </div>
 
         <!-- Create Button -->
-        <div class="create-btn">
-            <a href="{% url 'dynamic_table_create' table_name %}" class="btn">Create New Record</a>
+        <div class="button-container">
+            <div class="import-btn">
+                <a href="{% url 'dynamic_table_import' table_name %}" class="btn" >Import New Record</a>
+            </div>
+            <div class="create-btn">
+                <a href="{% url 'dynamic_table_create' table_name %}" class="btn">Create New Record</a>
+            </div>
         </div>
+       
 
         <!-- Table -->
         <table class="dynamic-table">

@@ -2,10 +2,10 @@ from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 from django.db import connection
 import json
-from django.db import models  # Correct import for models, including AutoField
+from django.db import models
 from .dynamic_registry import DYNAMIC_MODELS 
 
-# DYNAMIC_MODELS = {}
+
 
 def table_exists(table_name):
     """Checks if a table exists in the database."""
@@ -21,7 +21,7 @@ class AssignmentappConfig(AppConfig):
     name = 'assignmentapp'
 
     def ready(self):
-        from .dynamic_registry import DYNAMIC_MODELS  # ✅ Import shared storage
+        from .dynamic_registry import DYNAMIC_MODELS 
         from .models import DynamicTableSchema
         from django.db import models as modelss
 

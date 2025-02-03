@@ -62,6 +62,10 @@ h1 {
     margin-bottom: 20px;
     text-align: right;
 }
+.import-btn {
+    margin-bottom: 20px;
+    text-align: right;
+}
 
 .create-btn .btn {
     padding: 10px 20px;
@@ -71,9 +75,27 @@ h1 {
     border-radius: 4px;
 }
 
+.import-btn .btn {
+    padding: 10px 20px;
+    background-color: #0b5303;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.import-btn .btn:hover {
+    background-color: #22d906;
+}
 .create-btn .btn:hover {
     background-color: #0056b3;
 }
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
 
 /* Table */
 .dynamic-table {
