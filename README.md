@@ -76,3 +76,6 @@ Method	Endpoint	Description
                                  {
                                    "name": "customer"
                                  }
+
+
+to Navigate to the page use http://localhost:8000/assignmentapp/dynamic-table/
