@@ -13,10 +13,6 @@ class Field(models.Model):
     is_unique = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-class Test(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
 class DynamicTableSchema(models.Model):
     table_name = models.CharField(max_length=255, unique=True)
     fields_json = models.TextField()  # Store fields as JSON
