@@ -21,22 +21,31 @@ handle large data imports efficiently. The system have secure, flexible APIs
 
 3. Install dependencies:
    python -m venv env
+   
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+   
    .\env\Scripts\Activate.ps1
+   
    pip install Django
+   
    pip install djangorestframework
+   
    pip install psycopg2-binary
+   
    pip install djangorestframework-simplejwt
+   
    pip install celery
+   
    pip install redis
+   
 
-4. Start Redis
+5. Start Redis
    redis-server --port 6381
 
-5. Start Celery:
+6. Start Celery:
    celery -A assignment.celery worker --loglevel=info --pool=solo
 
-6. Run the Project
+7. Run the Project
    python manage.py runserver
 
 API Endpoints
