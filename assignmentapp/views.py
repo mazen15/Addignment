@@ -49,6 +49,8 @@ def create_table(request):
                 attrs[field_name] = models.CharField(max_length=255)
             elif field_type == "date":
                 attrs[field_name] = models.DateField()
+            elif field_type == "date":
+                attrs[field_name] = models.DateField()
             else:
                 return JsonResponse({"error": f"Unsupported field type '{field_type}'."}, status=400)
 
@@ -280,10 +282,11 @@ def import_csv_view(request, table_name):
         fs = FileSystemStorage()
         file_path = fs.save(csv_file.name, csv_file)
         #if no celery needed
-        # process_csv_import(table_name, file_path)
+        process_csv_import(table_name, file_path)
 
         #if celery and redis are needed
-        process_csv_import.delay(table_name, file_path)
+        # process_csv_import.apply_async(table_name, file_path)
+        # process_csv_import.apply_async(args=[table_name, file_path])
         
         
         return render(request, "import_csv.html", {"message": "Import started. Check logs for status."})

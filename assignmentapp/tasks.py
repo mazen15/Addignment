@@ -8,56 +8,80 @@ import redis
 from django.core.mail import send_mail
 
 
+
+import csv
+import redis
+from django.db import transaction
+from django.core.mail import send_mail
+from celery import shared_task
+
+BATCH_SIZE = 5000  # Process records in chunks
+
 @shared_task
 def process_csv_import(table_name, file_path):
     r = redis.Redis(host='127.0.0.1', port=6381, db=0)
-    if r.ping():
-        print("Successfully connected to Redis!")
-    else:
-        print("Failed to connect to Redis.")
+    if not r.ping():
+        return "Failed to connect to Redis."
+
     DynamicModel = get_dynamic_model(table_name)
     if not DynamicModel:
         return f"Table '{table_name}' not found."
 
     required_fields = [field.name for field in DynamicModel._meta.fields if not field.null and not field.blank]
 
+    total_records = 0
+    error_count = 0
     errors = []
     records = []
 
     with open(file_path, "r", encoding="utf-8") as file:
         reader = csv.DictReader(file)
+
         for row in reader:
-            # Validate required fields
+            total_records += 1
             missing_fields = [field for field in required_fields if not row.get(field)]
             if missing_fields:
-                errors.append(f"Missing fields {missing_fields} in row: {row}")
+                errors.append(f"Missing fields {missing_fields} in row {total_records}")
+                error_count += 1
                 continue
 
-            # Validate uniqueness (e.g., unique email)
+            # Validate uniqueness (if applicable)
             if "email" in row and DynamicModel.objects.filter(email=row["email"]).exists():
-                errors.append(f"Duplicate email: {row['email']} in row: {row}")
+                errors.append(f"Duplicate email: {row['email']} in row {total_records}")
+                error_count += 1
                 continue
 
             records.append(DynamicModel(**row))
 
-    # Bulk insert
+            # Insert in batches
+            if len(records) >= BATCH_SIZE:
+                with transaction.atomic():
+                    DynamicModel.objects.bulk_create(records, ignore_conflicts=True)
+                records = []  # Clear batch
+
+            # Track progress in Redis
+            r.set(f"csv_import:{table_name}:progress", f"{total_records} processed, {error_count} errors")
+
+    # Insert remaining records
     if records:
         with transaction.atomic():
             DynamicModel.objects.bulk_create(records, ignore_conflicts=True)
-        subject = "Import Completed Successfully"
-        message = "Your import has been completed successfully."
-        from_email = "testassignment00@gmail.com" 
-        user_email = "mazenbanna15@gmail.com"  
-        html_message = "<strong>Your import is successful!</strong>"
 
-        send_mail(
-            subject,
-            message,
-            from_email,
-            [user_email],  
-            html_message=html_message
-        )
-    return f"Import completed. {len(records)} records added, {len(errors)} errors."
+    # Log errors in Redis
+    r.set(f"csv_import:{table_name}:errors", "\n".join(errors))
+
+    # Send email notification
+    subject = "Import Completed"
+    message = f"Import completed with {total_records} records processed. {error_count} errors encountered."
+    send_mail(
+        subject,
+        message,
+        "testassignment00@gmail.com",
+        ["mazenbanna15@gmail.com","hzeineddine@arabiagis.com"],
+        html_message=f"<strong>{message}</strong>"
+    )
+
+    return f"Import completed: {total_records} records processed, {error_count} errors."
 
 
 
